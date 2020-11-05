@@ -1,0 +1,32 @@
+name: PublishBlog
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+    inputs:
+      tags:
+        description: 'trigger manually'
+
+jobs:
+  build:
+    runs-on: macOS-latest
+
+    steps:
+    - uses: actions/checkout@v2
+  
+    - name: Generate blog
+      run: swift run Wwdcat
+    - name: Publish in github pages repo
+      uses: crazy-max/ghaction-github-pages@v2
+      with:
+        repo: seviu2/seviu2.github.io
+        target_branch: main
+        keep_history: true
+        allow_empty_commit: false
+        build_dir: Output
+        committer: Meow
+        commit_message: Update blog content
+      env:
+        GH_PAT: ${{ secrets.REPO_TOKEN }}
